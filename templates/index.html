@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Journal</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">Trading Journal</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">API Management</a>
+                        </li>
+                        <!-- More navigation items as needed -->
+                    </ul>
+                    <button class="btn btn-outline-light ml-2" onclick="toggleTheme()">Toggle Theme</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-lg-6 mb-3">
+                <div class="info-box text-center">Risk per Day: {{ risk_per_day }}</div>
+                <div class="input-box">
+                    <label for="maxRisk">Max Risk for Trade:</label>
+                    <input type="number" id="maxRisk" name="maxRisk" class="form-control">
+                </div>
+                <div class="info-box text-center" id="maxRiskToday">Max Risk Today: <!-- Dynamic content here --></div>
+            </div>
+            <div class="col-lg-6 mb-3">
+                <div class="info-box text-center">Objective per Day: {{ objective_per_day }}</div>
+                <div class="input-box">
+                    <label for="stopLossTrigger">Trigger % Safe Stop Loss:</label>
+                    <input type="number" id="stopLossTrigger" name="stopLossTrigger" class="form-control">
+                </div>
+                <div class="input-box">
+                    <label for="stopLossAmount">Amount of % Safe Stop Loss:</label>
+                    <input type="number" id="stopLossAmount" name="stopLossAmount" class="form-control">
+                </div>
+            </div>
+        </div>
+        <div class="row text-center">
+            <div class="col-12">
+                <button id="startTrading" class="btn btn-primary">Start Trading</button>
+                <button id="pauseTrading" class="btn btn-secondary">Pause Trading</button>
+                <button id="showGraph" class="btn btn-success">Show Daily Graph</button>
+            </div>
+        </div>
+        <!-- Graph for the Last 7 Days -->
+        <h2>Last 7 Days Overview</h2>
+        <canvas id="sevenDayGraph"></canvas>
+
+        <!-- Table for Trades -->
+        <h2>Recent Trades</h2>
+<div class="table-responsive">
+            <table class="table table-hover table-bordered">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>Symbol</th>
+                        <th>Side</th>
+                        <th>Percentage (%)</th>
+                        <th>PnL ($)</th>
+                        <th>Stop Loss IDs</th>
+                        <th>Leverage</th>
+                        <th>Entry Price ($)</th>
+                        <th>Max Risk ($)</th>
+                        <th>Trigger % Stop Loss</th>
+                        <th>% Safe Stop Loss</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for trade in trades %}
+                    <tr>
+                        <td>{{ trade.symbol }}</td>
+                        <td style="color: {{ 'green' if trade.side == 'Long' else 'red' }}">{{ trade.side }}</td>
+                        <td>{{ trade.percentage }} %</td>
+                        <td>${{ trade.pnl }}</td>
+                        <td>{{ trade.stop_loss_orders_ids }}</td>
+                        <td>{{ trade.leverage }}</td>
+                        <td>${{ trade.entry_price }}</td>
+                        <td>${{ trade.max_risk }}</td>
+                        <td>{{ trade.trigger_safe_stop_loss }} %</td>
+                        <td>{{ trade.percentage_safe_stop_loss }} %</td>
+                        <td class="{{ 'text-white' if trade.state == 'Open' else '' }}" style="background-color: {{ 'green' if trade.state == 'Open' else '' }}; padding: 5px;">
+                            {{ trade.state }}
+                        </td>
+                        <td>
+                            {% if trade.state == 'Open' %}
+                                <button class="btn btn-warning">Panic Sell</button>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- JavaScript for Graphs and Button Handling -->
+    <script>
+        // JavaScript function to toggle the daily graph display
+        function toggleDailyGraph() {
+            var x = document.getElementById("dailyGraphContainer");
+            if (x.style.display === "none") {
+                x.style.display = "block";
+                // Optionally, trigger graph update/redrawing here
+            } else {
+                x.style.display = "none";
+            }
+        }
+
+        // Example function to render a Chart.js graph
+        function renderGraph(canvasId, data, options) {
+            var ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'line', // or 'bar', 'pie', etc.
+                data: data,
+                options: options
+            });
+        }
+
+        function toggleTheme() {
+            var body = document.body;
+            body.classList.toggle("bg-dark");
+            body.classList.toggle("bg-light");
+            // Additional code to toggle text and background colors, if necessary
+        }
+
+        // Dummy data and options for the 7-day overview graph
+        var sevenDayData = {
+            labels: ['Day 1', 'Day 2', 'Day 3', 'Day 4', 'Day 5', 'Day 6', 'Day 7'],
+            datasets: [{
+                label: 'Daily PnL',
+                data: [12, 19, 3, 5, 2, 3, 10],
+                backgroundColor: 'rgba(0, 123, 255, 0.5)',
+                borderColor: 'rgba(0, 123, 255, 1)',
+                borderWidth: 1
+            }]
+        };
+
+        var sevenDayOptions = {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        };
+
+        // Render the 7-day overview graph
+        window.onload = function() {
+            renderGraph('sevenDayGraph', sevenDayData, sevenDayOptions);
+        };
+
+        // Add more JavaScript as needed for data fetching and additional graph handling
+    </script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

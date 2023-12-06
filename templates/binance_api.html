@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Journal</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-light">
+        <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">Trading Journal</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#">API Management</a>
+                        </li>
+                        <!-- More navigation items as needed -->
+                    </ul>
+                    <button class="btn btn-outline-light ml-2" onclick="toggleTheme()">Toggle Theme</button>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <div class="container mt-5">
+        <h2 class="text-center">Manage Binance API Keys</h2>
+
+        <!-- Form for new API key and secret -->
+        <form>
+            <!-- Input fields for API Key and Secret -->
+            <button type="submit" class="btn btn-primary">Add API Key</button>
+        </form>
+
+        <!-- List of existing API keys -->
+        <div class="mt-4">
+            <h3>Existing API Keys</h3>
+            <ul class="list-group">
+                <!-- Loop over API keys -->
+            </ul>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+</body>
+</html>
