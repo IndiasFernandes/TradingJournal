@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+    <div class="container mt-5">
+        <h2>Manage Binance API Keys</h2>
+
+        <form method="post" action="{{ url_for('api_management') }}">
+            <div class="form-group">
+                <label for="apiKey">API Key</label>
+                <input type="text" class="form-control" id="apiKey" name="apiKey" required>
+            </div>
+            <div class="form-group">
+                <label for="apiSecret">API Secret</label>
+                <input type="text" class="form-control" id="apiSecret" name="apiSecret" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Add API Key</button>
+        </form>
+
+        <!-- List of existing API keys -->
+         <div class="mt-4">
+            <h3>Existing API Keys</h3>
+            <ul class="list-group">
+                {% for key in api_keys %}
+                <li class="list-group-item">
+                    API Key: {{ key.api_key }} - Secret: [Hidden]
+                    <!-- Optionally, add a button or link for additional actions (e.g., delete, edit) -->
+                </li>
+                {% else %}
+                <li class="list-group-item">No API keys found.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+{% endblock %}

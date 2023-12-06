@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Journal</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/styles.css') }}" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/favicon.png') }}">
+</head>
+<body>
+    <div class="d-flex" id="wrapper">
+        <!-- Sidebar -->
+        <div class="bg-dark" id="sidebar-wrapper">
+            <div class="sidebar-heading text-white">
+                <img src="{{ url_for('static', filename='images/favicon.png') }}" width="32px" alt="Logo" class="sidebar-logo"> Trading Journal
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item bg-dark"><a href="{{ url_for('dashboard') }}" class="text-light"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <!-- Trading Session Submenu -->
+                <li class="list-group-item bg-dark">
+                    <a href="#tradingSessionSubmenu" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle text-light"><i class="fas fa-chart-line"></i> Trading Session</a>
+                    <ul class="collapse list-unstyled" id="tradingSessionSubmenu">
+                        </br><li><a href="{{ url_for('objectives') }}" class="nav-link">Objectives</a></li>
+                          <li class="nav-item"><a class="nav-link" href="#">Concentrating</a></li>
+                            <li class="nav-item"><a class="nav-link" href="#">Trading Time</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#">Accountability</a></li>
+                    </ul>
+                </li>
+                <li class="list-group-item bg-dark"><a href="{{ url_for('trading_diary') }}" class="text-light"><i class="fas fa-book"></i> Trading Diary</a></li>
+                <li class="list-group-item bg-dark"><a href="{{ url_for('api_management') }}" class="text-light"><i class="fas fa-cogs"></i> API Management</a></li>
+                <li class="list-group-item bg-dark"><a href="{{ url_for('options') }}" class="text-light"><i class="fas fa-sliders-h"></i> Options</a></li>
+            </ul>
+        </div>
+        <!-- Page content wrapper -->
+        <div id="page-content-wrapper">
+
+            <div class="container-fluid">
+                {% block content %}{% endblock %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/themeToggle.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/graphs.js') }}"></script>
+    <script src="https://kit.fontawesome.com/2b554022ef.js" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.0/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        // Toggle the sidebar
+        $("#menu-toggle").click(function(e) {
+            e.preventDefault();
+            $("#wrapper").toggleClass("toggled");
+        });
+    </script>
+</body>
+</html>
